@@ -39,6 +39,15 @@ flow_time0 = flow_data.iloc[length:]
 time = flow_data.loc[length, 'time']
 flow_time0['time'] = flow_time0['time'] -time
 
+# Find the index of the row with largest flow value
+max_flow_index = flow_time0['flow'].idxmax()
+# Find the maximum force
+max_flow = flow_time0.loc[max_flow_index, 'flow']
+# Find the index of the row with smallest flow value
+min_flow_index = flow_time0['flow'].idxmin()
+# Find the maximum force
+min_flow = flow_time0.loc[min_flow_index, 'flow']
+
 
 # Read in flow rate data files with Pandas
 force_data = pd.read_csv('20170217data/force_travel_20170217_3ml_70mm-min_0um_2nd.csv')
@@ -67,14 +76,37 @@ force_time0['time'] = force_time0['time'] -time
 max_force_index = force_time0['load'].idxmax()
 # Find the maximum force
 max_force = force_time0.loc[max_force_index, 'load']
-
-plt.plot(flow_time0['time'], flow_time0['flow'], marker='.', linestyle='-')
-plt.plot(force_time0['time'], force_time0['load'], marker='.', linestyle='-')
-plt.legend(('flow rate', 'force'), loc='lower right')
-
-plt.xlabel('time (sec)')
-plt.ylabel('flow rate (mL/min)')
+# Find the index of the row with smallest load value
+min_force_index = force_time0['load'].idxmin()
+# Find the maximum force
+min_force = force_time0.loc[min_force_index, 'load']
 
 
-#plt.ylabel('load (N)')
+# Find maximum time
+time_flow = flow_data.loc[len(flow_data.index)-1, 'time']
+time_force = force_data.loc[len(force_data.index)-1, 'time']
+time_max = max(time_flow, time_force)
+
+# Plot flow rate and force verse time
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+lns1 = ax1.plot(flow_time0['time'], flow_time0['flow'],  sns.xkcd_rgb["denim blue"], linestyle='-', label = 'flow rate')
+
+ax2 = ax1.twinx()
+lns2 = ax2.plot(force_time0['time'], force_time0['load'], sns.xkcd_rgb["medium green"], linestyle='-', label = 'force')
+
+# Make the legend together
+lns = lns1+lns2
+labs = [l.get_label() for l in lns]
+ax1.legend(lns, labs, loc=0)
+
+ax1.grid()
+ax1.set_xlabel("Time (sec)")
+ax1.set_ylabel("Flow rate (mL/min)")
+ax2.set_ylabel("Force (N)")
+axis_margin = 0.5
+ax2.set_ylim(min_force - axis_margin, max_force + axis_margin)
+ax1.set_ylim(min_flow - axis_margin, max_flow + axis_margin)
+ax1.set_xlim(-axis_margin, time_max + axis_margin)
 plt.show()
