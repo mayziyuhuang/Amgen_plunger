@@ -16,7 +16,20 @@ flow_data.columns = ['sample', 'time', 'flow']
 # Make the flow rate to be positive
 flow_data.loc[:,'flow'] *= -1
 
-plt.plot(flow_data['time'], flow_data['flow'], marker='.',
+# Slice off the time < 0
+# When the travel is not zero anymore, consider it starts moving
+# Set the one data point ahead of it as time zero
+
+# Find the index that need to be cut off
+flow_time_less0 = flow_data[flow_data['flow'] <= 0.008]
+flow_time_less0['dsample'] = flow_time_less0['sample'] - flow_time_less0['sample'].shift(-1)
+length = flow_time_less0['dsample'].idxmin()
+
+
+# Define force_time0 dataframe
+flow_time0 = flow_data.iloc[length:]
+
+plt.plot(flow_time0['time'], flow_time0['flow'], marker='.',
          linestyle='none')
 plt.xlabel('relative time (sec)')
 plt.ylabel('flow rate (mL/min)')
