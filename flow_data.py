@@ -22,3 +22,14 @@ plt.show()
 
 #testing
 #testing2
+
+#git clone URL
+#git status
+#after making changes
+#git add *
+#git commit -m "message"
+#git status
+#git push
+
+#git status
+#git pull
