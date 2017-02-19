@@ -9,7 +9,7 @@ rc={'lines.linewidth': 2, 'axes.labelsize': 18, 'axes.titlesize': 18}
 sns.set(rc=rc)
 
 # Read in flow rate data files with Pandas
-force_data = pd.read_csv('20170217data/force_travel_20170217_3ml_70mm-min_0um_2nd.csv')
+force_data = pd.read_csv('20170217data/force_travel_20170217_5ml_70mm-min_0um_2nd.csv')
 force_data.columns = ['reading', 'load', 'travel', 'time']
 
 # The test stand pushes the syring down so the travel indicator is negative
@@ -42,3 +42,6 @@ plt.plot(force_time0['travel'], force_time0['load'], marker='.',
 plt.xlabel('travel distance (mm)')
 plt.ylabel('load (N)')
 plt.show()
+
+
+#### NEED TO CUT OFF THE END OF THE DATA FOR force_travel_20170217_5ml_70mm-min_0um_2nd
