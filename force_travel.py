@@ -27,6 +27,10 @@ length = len(force_time_less0.index)
 # Define force_time0 dataframe
 force_time0 = force_data.iloc[length-1:]
 
+# Set time 0
+time = force_data.loc[length-1, 'time']
+force_time0['time'] = force_time0['time'] -time
+
 
 # Find the index of the row with largest load value
 max_force_index = force_time0['load'].idxmax()
