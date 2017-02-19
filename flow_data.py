@@ -17,16 +17,21 @@ flow_data.columns = ['sample', 'time', 'flow']
 flow_data.loc[:,'flow'] *= -1
 
 # Slice off the time < 0
-# When the travel is not zero anymore, consider it starts moving
+# When there is no flow through the flow meter, the reading is not zero, but 0.002, 0.008
+# When the flow is not zero anymore, consider the syringe starts moving
 # Set the one data point ahead of it as time zero
 
 # Find the index that need to be cut off
+# Find all the flow rate that is less than 0.008 which considered to be not moving
 flow_time_less0 = flow_data[flow_data['flow'] <= 0.008]
+# Since after stop the machine, the sensor still records the flow rate
+# can not use the same method to cut off the zero part
+# Comparing the sample number, when the dsample is not -1 anymore, that is when the flow rate becomes non zero for a long time
 flow_time_less0['dsample'] = flow_time_less0['sample'] - flow_time_less0['sample'].shift(-1)
 length = flow_time_less0['dsample'].idxmin()
 
 
-# Define force_time0 dataframe
+# Define flow_time0 dataframe
 flow_time0 = flow_data.iloc[length:]
 
 plt.plot(flow_time0['time'], flow_time0['flow'], marker='.',
