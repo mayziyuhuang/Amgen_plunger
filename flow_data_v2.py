@@ -9,7 +9,7 @@ rc={'lines.linewidth': 2, 'axes.labelsize': 18, 'axes.titlesize': 18}
 sns.set(rc=rc)
 
 # Read in flow rate data files with Pandas
-flow_data = pd.read_csv('20170217data/flow_20170217_3ml_70mm-min_1.9umPAC_onlyplungercoa_3rd.csv')
+flow_data = pd.read_csv('20170217data/flow_20170217_3ml_70mm-min_1.9umPAC_onlyplungercoat_3rd.csv')
 flow_data.columns = ['sample', 'time', 'flow']
 
 # The flow sensor can sense the flow in two direction
