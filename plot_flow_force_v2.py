@@ -102,10 +102,10 @@ time_max = max(time_flow, time_force)
 # Plot flow rate and force verse time
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
-lns1 = ax1.plot(flow_time0['time'], flow_time0['flow'],  sns.xkcd_rgb["denim blue"], marker = '.', label = 'flow rate')
+lns1 = ax1.plot(flow_time0['time'], flow_time0['flow'],  sns.xkcd_rgb["denim blue"], marker = '.', linestyle = 'none', label = 'flow rate')
 
 ax2 = ax1.twinx()
-lns2 = ax2.plot(force_time0['time'], force_time0['load'], sns.xkcd_rgb["medium green"], marker = '.', label = 'force')
+lns2 = ax2.plot(force_time0['time'], force_time0['load'], sns.xkcd_rgb["medium green"], marker = '.', linestyle = 'none', label = 'force')
 
 # Make the legend together
 lns = lns1+lns2
