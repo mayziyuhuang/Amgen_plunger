@@ -29,6 +29,7 @@ length = len(force_time_less0.index)
 # Define force_time0 dataframe
 force_time0 = force_data.iloc[length-1:]
 
+# Slice off the data after machine stops moving, therefore travel will not change anymore
 max_travel_index = force_time0['travel'].idxmax()
 force_time0 = force_time0[:max_travel_index + 1 - length + 1]
 #max_travel = force_time0.loc[max_travel_index, 'travel']
@@ -52,6 +53,3 @@ plt.plot(force_time0['travel'], force_time0['load'], marker='.',
 plt.xlabel('travel distance (mm)')
 plt.ylabel('load (N)')
 plt.show()
-
-
-#### NEED TO CUT OFF THE END OF THE DATA FOR force_travel_20170217_5ml_70mm-min_0um_2nd
