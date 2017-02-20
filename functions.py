@@ -50,8 +50,8 @@ def extract_data(date, datatype, volume, speed, thickness, coatingposition, tria
         flow_time0['time'] = flow_time0['time'] -time
         data = flow_time0
 
-        maxtime = flow_data.loc[len(flow_data.index)-1, 'time']
-
+        #maxtime = flow_data.loc[len(flow_data.index)-1, 'time']
+        maxtime = flow_time0['time'].iloc[-1]
 
 
     elif datatype == 'force_travel':
@@ -91,7 +91,9 @@ def extract_data(date, datatype, volume, speed, thickness, coatingposition, tria
         force_time0 = force_time0.dropna()
         data = force_time0
 
-        maxtime = force_data.loc[len(force_data.index)-1, 'time']
+        #maxtime = force_data.loc[len(force_data.index)-1, 'time']
+        maxtime = force_time0['time'].iloc[-1]
+
 
     else:
         print('Wrong datatype')
