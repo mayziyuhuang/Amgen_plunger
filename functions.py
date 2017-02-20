@@ -50,6 +50,9 @@ def extract_data(date, datatype, volume, speed, thickness, coatingposition, tria
         flow_time0['time'] = flow_time0['time'] -time
         data = flow_time0
 
+        maxtime = flow_data.loc[len(flow_data.index)-1, 'time']
+
+
 
     elif datatype == 'force_travel':
         # Read in flow rate data files with Pandas
@@ -87,13 +90,16 @@ def extract_data(date, datatype, volume, speed, thickness, coatingposition, tria
 
         force_time0 = force_time0.dropna()
         data = force_time0
+
+        maxtime = force_data.loc[len(force_data.index)-1, 'time']
+
     else:
         print('Wrong datatype')
 
-    return data
+    return data, maxtime
 
 def plot_flow(date, datatype, volume, speed, thickness, coatingposition, trial):
-    data = extract_data(date, datatype, volume, speed, thickness, coatingposition, trial)
+    data, time_flow = extract_data(date, datatype, volume, speed, thickness, coatingposition, trial)
     fig = plt.plot(data['time'], data['flow'], sns.xkcd_rgb["denim blue"], marker='.',
              linestyle='none')
     plt.xlabel('Time (sec)')
@@ -104,7 +110,7 @@ def plot_flow(date, datatype, volume, speed, thickness, coatingposition, trial):
     return fig
 
 def plot_force(date, datatype, volume, speed, thickness, coatingposition, trial):
-    data = extract_data(date, datatype, volume, speed, thickness, coatingposition, trial)
+    data, time_force = extract_data(date, datatype, volume, speed, thickness, coatingposition, trial)
     fig = plt.plot(data['travel'], data['load'], sns.xkcd_rgb["medium green"], marker='.',
              linestyle='none')
     plt.xlabel('Travel Distance (mm)')
@@ -116,6 +122,56 @@ def plot_force(date, datatype, volume, speed, thickness, coatingposition, trial)
     return fig
 
 
+def plot_flow_force(date, volume, speed, thickness, coatingposition, trial):
+    flow_time0, time_flow = extract_data(date, 'flow', volume, speed, thickness, coatingposition, trial)
+    force_time0, time_force = extract_data(date, 'force_travel', volume, speed, thickness, coatingposition, trial)
+
+    # Find the limit of the x and y axis
+    # Find the index of the row with largest flow value
+    max_flow_index = flow_time0['flow'].idxmax()
+    # Find the maximum force
+    max_flow = flow_time0.loc[max_flow_index, 'flow']
+    # Find the index of the row with smallest flow value
+    min_flow_index = flow_time0['flow'].idxmin()
+    # Find the maximum force
+    min_flow = flow_time0.loc[min_flow_index, 'flow']
+
+    # Find the index of the row with largest load value
+    max_force_index = force_time0['load'].idxmax()
+    # Find the maximum force
+    max_force = force_time0.loc[max_force_index, 'load']
+    # Find the index of the row with smallest load value
+    min_force_index = force_time0['load'].idxmin()
+    # Find the maximum force
+    min_force = force_time0.loc[min_force_index, 'load']
+
+    # Find maximum time
+    time_max = max(time_flow, time_force)
+    # Plot flow rate and force verse time
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+    lns1 = ax1.plot(flow_time0['time'], flow_time0['flow'],  sns.xkcd_rgb["denim blue"], marker = '.', linestyle = 'none', label = 'flow rate')
+
+    ax2 = ax1.twinx()
+    lns2 = ax2.plot(force_time0['time'], force_time0['load'], sns.xkcd_rgb["medium green"], marker = '.', linestyle = 'none', label = 'force')
+
+    # Make the legend together
+    lns = lns1+lns2
+    labs = [l.get_label() for l in lns]
+    ax1.legend(lns, labs, loc= "upper right")
+
+    ax1.grid()
+    ax1.set_xlabel("Time (sec)")
+    ax1.set_ylabel("Flow rate (mL/min)")
+    ax2.set_ylabel("Force (N)")
+    axis_margin = 1
+    ax2.set_ylim(min_force - axis_margin, max_force + axis_margin)
+    ax1.set_ylim(min_flow - axis_margin, max_flow + axis_margin)
+    ax1.set_xlim(-axis_margin, time_max + axis_margin)
+    plt.title(volume + ' syringe with ' + thickness + ' ' + coatingposition + ' ' + trial + ' trial')
+
+    return fig
+
 
 def save_plot(date, datatype, volume, speed, thickness, coatingposition, trial):
 
@@ -123,6 +179,9 @@ def save_plot(date, datatype, volume, speed, thickness, coatingposition, trial):
         plot_flow(date, datatype, volume, speed, thickness, coatingposition, trial)
     elif datatype == 'force_travel':
         plot_force(date, datatype, volume, speed, thickness, coatingposition, trial)
+    elif datatype == 'both':
+        plot_flow_force(date, volume, speed, thickness, coatingposition, trial)
+
     else:
         print('Wrong datatype')
 
