@@ -9,7 +9,7 @@ rc={'lines.linewidth': 2, 'axes.labelsize': 18, 'axes.titlesize': 18}
 sns.set(rc=rc)
 
 # Read in flow rate data files with Pandas
-flow_data = pd.read_csv('20170217data/flow_20170217_5ml_70mm-min_1.9umPAC_onlyplungercoat_2nd.csv')
+flow_data = pd.read_csv('20170217data/flow_20170217_3ml_70mm-min_1.9umPAC_onlyplungercoat_1st.csv')
 flow_data.columns = ['sample', 'time', 'flow']
 
 # The flow sensor can sense the flow in two direction
@@ -47,7 +47,7 @@ time = flow_data.loc[length, 'time']
 flow_time0['time'] = flow_time0['time'] -time
 
 # Read in flow rate data files with Pandas
-force_data = pd.read_csv('20170217data/force_travel_20170217_5ml_70mm-min_1.9umPAC_onlyplungercoat_2nd.csv')
+force_data = pd.read_csv('20170217data/force_travel_20170217_3ml_70mm-min_1.9umPAC_onlyplungercoat_1st.csv')
 force_data.columns = ['reading', 'load', 'travel', 'time']
 
 # The test stand pushes the syring down so the travel indicator is negative
@@ -102,21 +102,21 @@ time_max = max(time_flow, time_force)
 # Plot flow rate and force verse time
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
-lns1 = ax1.plot(flow_time0['time'], flow_time0['flow'],  sns.xkcd_rgb["denim blue"], linestyle='-', label = 'flow rate')
+lns1 = ax1.plot(flow_time0['time'], flow_time0['flow'],  sns.xkcd_rgb["denim blue"], marker = '.', label = 'flow rate')
 
 ax2 = ax1.twinx()
-lns2 = ax2.plot(force_time0['time'], force_time0['load'], sns.xkcd_rgb["medium green"], linestyle='-', label = 'force')
+lns2 = ax2.plot(force_time0['time'], force_time0['load'], sns.xkcd_rgb["medium green"], marker = '.', label = 'force')
 
 # Make the legend together
 lns = lns1+lns2
 labs = [l.get_label() for l in lns]
-ax1.legend(lns, labs, loc=0)
+ax1.legend(lns, labs, loc= "upper right")
 
 ax1.grid()
 ax1.set_xlabel("Time (sec)")
 ax1.set_ylabel("Flow rate (mL/min)")
 ax2.set_ylabel("Force (N)")
-axis_margin = 0.5
+axis_margin = 1
 ax2.set_ylim(min_force - axis_margin, max_force + axis_margin)
 ax1.set_ylim(min_flow - axis_margin, max_flow + axis_margin)
 ax1.set_xlim(-axis_margin, time_max + axis_margin)
