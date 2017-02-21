@@ -252,6 +252,7 @@ def compare_data(date, datatype, volume, speed, number):
         max_flow_list = []
         min_flow_list = []
         time_list = []
+        name = ''
         for n in range(number):
             k = n + 1
             thickness = input('Thickness' + str(k) + ' you want to compare:')
@@ -276,7 +277,10 @@ def compare_data(date, datatype, volume, speed, number):
             min_flow_list.append(min_flow)
             min_flow_time = data.loc[min_flow_index, 'time']
             time_list.append(time_flow)
-
+            name += thickness
+            name += '_'
+            name += trial
+            name += '_'
             fig = plt.plot(data['time'], data['flow'], marker='.', linestyle='none', label = thickness + coatingposition + trial)
             fig = plt.plot(max_flow_time, max_flow, 'ro')
             fig = plt.text(max_flow_time, max_flow + 0.75, str(max_flow))
@@ -290,12 +294,13 @@ def compare_data(date, datatype, volume, speed, number):
         plt.ylabel('Flow Rate (mL/min)')
         plt.legend(loc = 'upper right')
         plt.title(volume + ' syringe with different parylene thickness coating')
-        plt.savefig(date + 'data/' + 'plot/' + 'compare_' + str(number) + '_' + datatype + '_' + date + '_' + volume + '_' + speed + '.pdf')
+        plt.savefig(date + 'data/' + 'plot/' + 'compare_' + str(number) + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '.pdf')
     elif datatype == 'force_travel':
         max_force_list = []
         min_force_list = []
         max_travel_list = []
         time_list = []
+        name = ''
         for n in range(number):
             k = n + 1
             thickness = input('Thickness' + str(k) + ' you want to compare:')
@@ -322,6 +327,10 @@ def compare_data(date, datatype, volume, speed, number):
             time_list.append(time_force)
             max_travel_index = data['travel'].idxmax()
             max_travel_list.append(data.loc[max_travel_index, 'travel'])
+            name += thickness
+            name += '_'
+            name += trial
+            name += '_'
             fig = plt.plot(data['travel'], data['load'], marker='.', linestyle='none', label = thickness + coatingposition + trial)
             fig = plt.plot(max_force_travel, max_force, 'ro')
             fig = plt.text(max_force_travel + 0.75, max_force , str(max_force))
@@ -335,7 +344,7 @@ def compare_data(date, datatype, volume, speed, number):
         plt.ylabel('Load (N)')
         plt.legend(loc = 'upper right')
         plt.title(volume + ' syringe with different parylene thickness coating')
-        plt.savefig(date + 'data/' + 'plot/' + 'compare_' + str(number) + '_' + datatype + '_' + date + '_' + volume + '_' + speed + '_' + trial + '.pdf')
+        plt.savefig(date + 'data/' + 'plot/' + 'compare_' + str(number) + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '.pdf')
     else:
         print('wrong datatype')
 
