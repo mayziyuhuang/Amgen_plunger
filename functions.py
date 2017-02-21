@@ -104,6 +104,23 @@ def plot_flow(date, datatype, volume, speed, thickness, coatingposition, trial):
     data, time_flow = extract_data(date, datatype, volume, speed, thickness, coatingposition, trial)
     fig = plt.plot(data['time'], data['flow'], sns.xkcd_rgb["denim blue"], marker='.',
              linestyle='none')
+    # Find the index of the row with largest flow value
+    max_flow_index = data['flow'].idxmax()
+    # Find the maximum force
+    max_flow = data.loc[max_flow_index, 'flow']
+    max_flow_time = data.loc[max_flow_index, 'time']
+    # Find the index of the row with smallest flow value
+    min_flow_index = data['flow'].idxmin()
+    # Find the maximum force
+    min_flow = data.loc[min_flow_index, 'flow']
+    min_flow_time = data.loc[min_flow_index, 'time']
+
+    fig = plt.plot(max_flow_time, max_flow, 'ro')
+    fig = plt.text(max_flow_time, max_flow + 0.75, str(max_flow))
+
+    fig = plt.plot(min_flow_time, min_flow, 'ro')
+    fig = plt.text(min_flow_time, min_flow - 0.75, str(min_flow))
+
     plt.xlabel('Time (sec)')
     plt.ylabel('Flow Rate (mL/min)')
     plt.title(volume + ' syringe with ' + thickness + ' ' + coatingposition + ' ' + trial + ' trial')
@@ -115,6 +132,23 @@ def plot_force(date, datatype, volume, speed, thickness, coatingposition, trial)
     data, time_force = extract_data(date, datatype, volume, speed, thickness, coatingposition, trial)
     fig = plt.plot(data['travel'], data['load'], sns.xkcd_rgb["medium green"], marker='.',
              linestyle='none')
+    # Find the index of the row with largest load value
+    max_force_index = data['load'].idxmax()
+    # Find the maximum force
+    max_force = data.loc[max_force_index, 'load']
+    max_force_travel = data.loc[max_force_index, 'travel']
+    # Find the index of the row with smallest load value
+    min_force_index = data['load'].idxmin()
+    # Find the maximum force
+    min_force = data.loc[min_force_index, 'load']
+    min_force_travel = data.loc[min_force_index, 'travel']
+
+    fig = plt.plot(max_force_travel, max_force, 'ro')
+    fig = plt.text(max_force_travel + 0.75, max_force , str(max_force))
+
+    fig = plt.plot(min_force_travel, min_force, 'ro')
+    fig = plt.text(min_force_travel + 0.75, min_force , str(min_force))
+
     plt.xlabel('Travel Distance (mm)')
     plt.ylabel('Load (N)')
     plt.title(volume + ' syringe with ' + thickness + ' ' + coatingposition + ' ' + trial + ' trial')
@@ -133,19 +167,24 @@ def plot_flow_force(date, volume, speed, thickness, coatingposition, trial):
     max_flow_index = flow_time0['flow'].idxmax()
     # Find the maximum force
     max_flow = flow_time0.loc[max_flow_index, 'flow']
+    max_flow_time = flow_time0.loc[max_flow_index, 'time']
     # Find the index of the row with smallest flow value
     min_flow_index = flow_time0['flow'].idxmin()
     # Find the maximum force
     min_flow = flow_time0.loc[min_flow_index, 'flow']
+    min_flow_time = flow_time0.loc[min_flow_index, 'time']
 
     # Find the index of the row with largest load value
     max_force_index = force_time0['load'].idxmax()
     # Find the maximum force
     max_force = force_time0.loc[max_force_index, 'load']
+    max_force_travel = force_time0.loc[max_force_index, 'travel']
     # Find the index of the row with smallest load value
     min_force_index = force_time0['load'].idxmin()
     # Find the maximum force
     min_force = force_time0.loc[min_force_index, 'load']
+    min_force_travel = force_time0.loc[min_force_index, 'travel']
+
 
     # Find maximum time
     time_max = max(time_flow, time_force)
@@ -162,6 +201,19 @@ def plot_flow_force(date, volume, speed, thickness, coatingposition, trial):
     labs = [l.get_label() for l in lns]
     ax1.legend(lns, labs, loc= "upper right")
 
+    fig = ax1.plot(max_flow_time, max_flow, 'ro')
+    fig = ax1.text(max_flow_time, max_flow + 0.75, str(max_flow))
+
+    fig = ax1.plot(min_flow_time, min_flow, 'ro')
+    fig = ax1.text(min_flow_time, min_flow - 0.75, str(min_flow))
+    fig = ax2.plot(max_force_travel, max_force, 'ro')
+    fig = ax2.text(max_force_travel + 0.75, max_force , str(max_force))
+
+    fig = ax2.plot(min_force_travel, min_force, 'ro')
+    fig = ax2.text(min_force_travel + 0.75, min_force , str(min_force))
+
+
+
     ax1.grid()
     ax1.set_xlabel("Time (sec)")
     ax1.set_ylabel("Flow rate (mL/min)")
@@ -173,6 +225,7 @@ def plot_flow_force(date, volume, speed, thickness, coatingposition, trial):
     plt.title(volume + ' syringe with ' + thickness + ' ' + coatingposition + ' ' + trial + ' trial')
 
     return fig
+
 
 
 def save_plot(date, datatype, volume, speed, thickness, coatingposition, trial):
@@ -191,3 +244,100 @@ def save_plot(date, datatype, volume, speed, thickness, coatingposition, trial):
     plt.show()
 
     return None
+
+
+def compare_data(date, datatype, volume, speed, number):
+    number = int(number)
+    if datatype == 'flow':
+        max_flow_list = []
+        min_flow_list = []
+        time_list = []
+        for n in range(number):
+            k = n + 1
+            thickness = input('Thickness' + str(k) + ' you want to compare:')
+            if thickness == '0um':
+                coatingposition = ''
+            else:
+                where = input('Coating position is onlyplungercoat (y/n):')
+                if where == 'y':
+                    coatingposition = 'onlyplungercoat_'
+                else:
+                    print('wrong')
+            trial = input('Trial (1st, 2nd, 3rd):')
+            #thick_array[[n]] = thickness
+            #data = fun.extract(date, datatype, volume, speed, thickness, coatingposition, trial)
+            data, time_flow = extract_data(date, datatype, volume, speed, thickness, coatingposition, trial)
+            max_flow_index = data['flow'].idxmax()
+            max_flow = data.loc[max_flow_index, 'flow']
+            max_flow_list.append(max_flow)
+            max_flow_time = data.loc[max_flow_index, 'time']
+            min_flow_index = data['flow'].idxmin()
+            min_flow = data.loc[min_flow_index, 'flow']
+            min_flow_list.append(min_flow)
+            min_flow_time = data.loc[min_flow_index, 'time']
+            time_list.append(time_flow)
+
+            fig = plt.plot(data['time'], data['flow'], marker='.', linestyle='none', label = thickness + coatingposition + trial)
+            fig = plt.plot(max_flow_time, max_flow, 'ro')
+            fig = plt.text(max_flow_time, max_flow + 0.75, str(max_flow))
+            fig = plt.plot(min_flow_time, min_flow, 'ro')
+            fig = plt.text(min_flow_time, min_flow - 0.75, str(min_flow))
+
+        plot_margin = 1
+        plt.ylim(min(min_flow_list) - plot_margin, max(max_flow_list) + plot_margin)
+        plt.xlim(-plot_margin, max(time_list)+ plot_margin)
+        plt.xlabel('Time (sec)')
+        plt.ylabel('Flow Rate (mL/min)')
+        plt.legend(loc = 'upper right')
+        plt.title(volume + ' syringe with different parylene thickness coating')
+        plt.savefig(date + 'data/' + 'plot/' + 'compare_' + str(number) + '_' + datatype + '_' + date + '_' + volume + '_' + speed + '.pdf')
+    elif datatype == 'force_travel':
+        max_force_list = []
+        min_force_list = []
+        max_travel_list = []
+        time_list = []
+        for n in range(number):
+            k = n + 1
+            thickness = input('Thickness' + str(k) + ' you want to compare:')
+            if thickness == '0um':
+                coatingposition = ''
+            else:
+                where = input('Coating position is onlyplungercoat (y/n):')
+                if where == 'y':
+                    coatingposition = 'onlyplungercoat_'
+                else:
+                    print('wrong')
+            trial = input('Trial (1st, 2nd, 3rd):')
+                #thick_array[[n]] = thickness
+                #data = fun.extract(date, datatype, volume, speed, thickness, coatingposition, trial)
+            data, time_force = extract_data(date, datatype, volume, speed, thickness, coatingposition, trial)
+            max_force_index = data['load'].idxmax()
+            max_force = data.loc[max_force_index, 'load']
+            max_force_list.append(max_force)
+            max_force_travel = data.loc[max_force_index, 'travel']
+            min_force_index = data['load'].idxmin()
+            min_force = data.loc[min_force_index, 'load']
+            min_force_list.append(min_force)
+            min_force_travel = data.loc[min_force_index, 'travel']
+            time_list.append(time_force)
+            max_travel_index = data['travel'].idxmax()
+            max_travel_list.append(data.loc[max_travel_index, 'travel'])
+            fig = plt.plot(data['travel'], data['load'], marker='.', linestyle='none', label = thickness + coatingposition + trial)
+            fig = plt.plot(max_force_travel, max_force, 'ro')
+            fig = plt.text(max_force_travel + 0.75, max_force , str(max_force))
+            fig = plt.plot(min_force_travel, min_force, 'ro')
+            fig = plt.text(min_force_travel + 0.75, min_force , str(min_force))
+
+        plot_margin = 1
+        plt.ylim(min(min_force_list) - plot_margin, max(max_force_list) + plot_margin)
+        plt.xlim(-plot_margin, max(max_travel_list)+ plot_margin)
+        plt.xlabel('Travel Distance (mm)')
+        plt.ylabel('Load (N)')
+        plt.legend(loc = 'upper right')
+        plt.title(volume + ' syringe with different parylene thickness coating')
+        plt.savefig(date + 'data/' + 'plot/' + 'compare_' + str(number) + '_' + datatype + '_' + date + '_' + volume + '_' + speed + '_' + trial + '.pdf')
+    else:
+        print('wrong datatype')
+
+
+    return plt.show()
