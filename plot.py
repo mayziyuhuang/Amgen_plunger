@@ -8,7 +8,8 @@ import seaborn as sns
 rc={'lines.linewidth': 2, 'axes.labelsize': 18, 'axes.titlesize': 18}
 sns.set(rc=rc)
 
-import functions as fun
+import functions_2nd as fun
+
 
 compare = input('Thickness comparision (y/n):')
 if compare == 'n':
@@ -21,7 +22,7 @@ if compare == 'n':
     if thickness == '0um':
         coatingposition = ''
     else:
-        where = input('Coating position is onlyplungercoat (y/n):') 
+        where = input('Coating position is onlyplungercoat (y/n):')
         if where == 'y':
             coatingposition = 'onlyplungercoat_'
         else:
