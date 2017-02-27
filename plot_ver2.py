@@ -66,8 +66,8 @@ elif plot_type == '4':
 
     fun.compare_thickness(date, datatype, volume, speed, number)
 
-elif plot_type == '2' or '4':
-    
+#elif plot_type == '2' or '4':
+
 
 
 else:
