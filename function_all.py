@@ -8,8 +8,8 @@ import seaborn as sns
 rc={'lines.linewidth': 2, 'axes.labelsize': 18, 'axes.titlesize': 18}
 sns.set(rc=rc)
 
-def extract_flow_data(date, datatype, volume, speed, thickness, coatingposition, syringe, trial):
-    file_name = date + 'data/' + datatype + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.xls'
+def extract_flow_data(date, volume, speed, thickness, coatingposition, syringe, trial):
+    file_name = date + 'data/' + 'flow' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.xls'
     excel_file = pd.ExcelFile(file_name)
     df = excel_file.parse('DataLog')
 
@@ -43,8 +43,8 @@ def extract_flow_data(date, datatype, volume, speed, thickness, coatingposition,
 
     return data, maxtime, min_x, min_y, max_x, max_y
 
-def extract_force_data(date, datatype, volume, speed, thickness, coatingposition, syringe, trial):
-    file_name = date + 'data/' + datatype + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.xlsx'
+def extract_force_data(date, volume, speed, thickness, coatingposition, syringe, trial):
+    file_name = date + 'data/' + 'force_travel' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.xlsx'
     excel_file = pd.ExcelFile(file_name)
     df = excel_file.parse('Sheet4')
 
@@ -76,8 +76,8 @@ def extract_force_data(date, datatype, volume, speed, thickness, coatingposition
     return data, maxtime, min_x, min_y, max_x, max_y
 
 
-def plot_flow(date, datatype, volume, speed, thickness, coatingposition, syringe, trial):
-    data = extract_flow_data(date, datatype, volume, speed, thickness, coatingposition, syringe, trial)
+def plot_flow(date, volume, speed, thickness, coatingposition, syringe, trial):
+    data = extract_flow_data(date, volume, speed, thickness, coatingposition, syringe, trial)
     df = data[0]
     fig = plt.plot(df['time'], df['flow'], sns.xkcd_rgb["denim blue"], marker='.',
              linestyle='none')
@@ -92,12 +92,12 @@ def plot_flow(date, datatype, volume, speed, thickness, coatingposition, syringe
     plt.ylabel('Flow Rate (mL/min)')
     plt.title(volume + ' ' + syringe + ' syringe with ' + thickness + ' ' + coatingposition + ' ' + trial + ' trial ' + speed)
 
-    plt.savefig(date + 'data/' + 'plot/' + datatype + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.pdf')
+    plt.savefig(date + 'data/' + 'plot/' + 'flow' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.pdf')
 
     return plt.show()
 
-def plot_flow(date, datatype, volume, speed, thickness, coatingposition, syringe, trial):
-    data = extract_force_data(date, datatype, volume, speed, thickness, coatingposition, syringe, trial)
+def plot_force(date, volume, speed, thickness, coatingposition, syringe, trial):
+    data = extract_force_data(date, volume, speed, thickness, coatingposition, syringe, trial)
     df = data[0]
     fig = plt.plot(df['travel'], df['load'], sns.xkcd_rgb["medium green"], marker='.',
              linestyle='none')
@@ -111,6 +111,122 @@ def plot_flow(date, datatype, volume, speed, thickness, coatingposition, syringe
     plt.xlabel('Travel Distance (mm)')
     plt.ylabel('Load (N)')
     plt.title(volume + ' ' + syringe + ' syringe with ' + thickness + ' ' + coatingposition + ' ' + trial + ' trial ' + speed)
-    plt.savefig(date + 'data/' + 'plot/' + datatype + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.pdf')
+    plt.savefig(date + 'data/' + 'plot/' + 'force_travel' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.pdf')
+
+    return plt.show()
+
+def plot_flow_force(date, volume, speed, thickness, coatingposition, syringe, trial):
+    flow = extract_flow_data(date, volume, speed, thickness, coatingposition, trial, syringe)
+    force = extract_force_data(date, volume, speed, thickness, coatingposition, trial, syringe)
+
+    # Find maximum time
+    time_max = max(flow[1], force[1])
+    # Plot flow rate and force verse time
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+    lns1 = ax1.plot(flow['time'], flow['flow'],  sns.xkcd_rgb["denim blue"], marker = '.', linestyle = 'none', label = 'flow rate')
+
+    ax2 = ax1.twinx()
+    lns2 = ax2.plot(force['time'], force['load'], sns.xkcd_rgb["medium green"], marker = '.', linestyle = 'none', label = 'force')
+
+    # Make the legend together
+    lns = lns1+lns2
+    labs = [l.get_label() for l in lns]
+    ax1.legend(lns, labs, loc= "upper right")
+
+    fig = ax1.plot(flow[4], flow[5], 'ro')
+    fig = ax1.text(flow[4], flow[5] + 0.75, str(flow[5]))
+
+    fig = ax1.plot(flow[2], flow[3], 'ro')
+    fig = ax1.text(flow[2], flow[3] - 0.75, str(flow[3]))
+    fig = ax2.plot(force[4], force[5], 'ro')
+    fig = ax2.text(force[4], force[5] + 0.75, str(force[5]))
+
+    fig = ax2.plot(force[2], force[3], 'ro')
+    fig = ax2.text(force[2], force[3] - 0.75, str(force[3]))
+
+
+
+    ax1.grid()
+    ax1.set_xlabel("Time (sec)")
+    ax1.set_ylabel("Flow rate (mL/min)")
+    ax2.set_ylabel("Force (N)")
+    axis_margin = 1
+    ax2.set_ylim(force[3] - axis_margin, force[5] + axis_margin)
+    ax1.set_ylim(flow[3] - axis_margin, flow[5] + axis_margin)
+    ax1.set_xlim(-axis_margin, time_max + axis_margin)
+    plt.title(volume + ' ' + syringe + ' syringe with ' + thickness + ' ' + coatingposition + ' ' + trial + ' trial ' + speed)
+
+    plt.savefig(date + 'data/' + 'plot/' + 'both' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.pdf')
+
+
+    return plt.show()
+
+def compare_syringe(date, datatype, volume, speed, thickness, coatingposition, number):
+    number = int(number)
+    if datatype == 'flow':
+        max_list = []
+        min_list = []
+        time_list = []
+        name = ''
+        for n in range(number):
+            k = n + 1
+            syringe = input('Syringe' + str(k) + ':' )
+            trial = input('Which trial: ')
+            data = extract_flow_data(date, volume, speed, thickness, coatingposition, syringe, trial)
+            max_list.append(data[5])
+            min_list.append(data[3])
+            time_list.append(data[1])
+            name += syringe
+            name += 'syringe_'
+            name += trial
+            name += 'trial_'
+            df = data[0]
+            fig = plt.plot(df['time'], df['flow'], marker='.', linestyle='none', label = syringe + ' syringe_' + trial)
+            fig = plt.plot(data[4], data[5], 'ro')
+            fig = plt.text(data[4], data[5] + 0.75, str(data[5]))
+            fig = plt.plot(data[2], data[3], 'ro')
+            fig = plt.text(data[2], data[3] - 0.75, str(data[3]))
+        plot_margin = 1
+        plt.ylim(min(min_list) - plot_margin, max(max_list) + plot_margin)
+        plt.xlim(-plot_margin, max(time_list)+ plot_margin)
+        plt.xlabel('Time (sec)')
+        plt.ylabel('Flow Rate (mL/min)')
+        plt.legend(loc = 'upper right')
+        plt.title('Flow rate for different syringes')
+        plt.savefig(date + 'data/' + 'plot/' + 'compare_syringe' + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '_' + thickness + '.pdf')
+    elif datatype == 'force_travel':
+        max_list = []
+        min_list = []
+        time_list = []
+        name = ''
+        for n in range(number):
+            k = n + 1
+            syringe = input('Syringe' + str(k) + ':' )
+            trial = input('Which trial: ')
+            data = extract_force_data(date, volume, speed, thickness, coatingposition, syringe, trial)
+            max_list.append(data[5])
+            min_list.append(data[3])
+            time_list.append(data[1])
+            name += syringe
+            name += 'syringe_'
+            name += trial
+            name += 'trial_'
+            df = data[0]
+            fig = plt.plot(df['time'], df['flow'], marker='.', linestyle='none', label = syringe + ' syringe_' + trial)
+            fig = plt.plot(data[4], data[5], 'ro')
+            fig = plt.text(data[4], data[5] + 0.75, str(data[5]))
+            fig = plt.plot(data[2], data[3], 'ro')
+            fig = plt.text(data[2], data[3] - 0.75, str(data[3]))
+        plot_margin = 1
+        plt.ylim(min(min_list) - plot_margin, max(max_list) + plot_margin)
+        plt.xlim(-plot_margin, max(time_list)+ plot_margin)
+        plt.xlabel('Travel Distance (mm)')
+        plt.ylabel('Load (N)')
+        plt.legend(loc = 'upper right')
+        plt.title('Force for different syringes')
+        plt.savefig(date + 'data/' + 'plot/' + 'compare_syringe' + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '_' + thickness + '.pdf')
+    else:
+        print('wrong datatype')
 
     return plt.show()
