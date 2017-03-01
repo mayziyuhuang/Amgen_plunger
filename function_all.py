@@ -316,7 +316,7 @@ def compare_thickness(date, datatype, volume, speed, number):
         plt.ylabel('Load (N)')
         plt.legend(loc = 'upper right')
         plt.title(volume + ' syringe with different parylene thickness coating')
-        plt.savefig(date + 'data/' + 'plot/' + 'compare_thickness' + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '.pdf)
+        plt.savefig(date + 'data/' + 'plot/' + 'compare_thickness' + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '.pdf')
     else:
         print('wrong datatype')
 
