@@ -98,6 +98,7 @@ def extract_force_data(date, volume, speed, thickness, coatingposition, syringe,
     df_time0 = df.iloc[length-1:]
 
     max_travel_index = df_time0['travel'].idxmax()
+    maxtravel = df_time0.loc[max_travel_index, 'travel']
     df_time0 = df_time0[:max_travel_index + 1 - length + 1]
 
     time = df.loc[length - 1, 'time']
@@ -115,7 +116,7 @@ def extract_force_data(date, volume, speed, thickness, coatingposition, syringe,
     min_y = data.loc[min_force_index, 'load']
     min_x = data.loc[min_force_index, 'travel']
 
-    return data, maxtime, min_x, min_y, max_x, max_y
+    return data, maxtime, min_x, min_y, max_x, max_y, maxtravel
 
 
 def plot_flow(date, volume, speed, thickness, coatingposition, syringe, trial, stop):
@@ -251,7 +252,7 @@ def compare_syringe(date, datatype, volume, speed, thickness, coatingposition, n
     elif datatype == 'force_travel':
         max_list = []
         min_list = []
-        time_list = []
+        travel_list = []
         name = ''
         for n in range(number):
             k = n + 1
@@ -260,20 +261,20 @@ def compare_syringe(date, datatype, volume, speed, thickness, coatingposition, n
             data = extract_force_data(date, volume, speed, thickness, coatingposition, syringe, trial)
             max_list.append(data[5])
             min_list.append(data[3])
-            time_list.append(data[1])
+            travel_list.append(data[6])
             name += syringe
             name += 'syringe_'
             name += trial
             name += 'trial_'
             df = data[0]
-            fig = plt.plot(df['time'], df['flow'], marker='.', linestyle='none', label = syringe + ' syringe_' + trial)
+            fig = plt.plot(df['travel'], df['load'], marker='.', linestyle='none', label = syringe + ' syringe_' + trial)
             fig = plt.plot(data[4], data[5], 'ro')
             fig = plt.text(data[4] + 0.75, data[5], str(data[5]))
             fig = plt.plot(data[2], data[3], 'ro')
             fig = plt.text(data[2] - 0.75, data[3], str(data[3]))
         plot_margin = 1
         plt.ylim(min(min_list) - plot_margin, max(max_list) + plot_margin)
-        plt.xlim(-plot_margin, max(time_list)+ plot_margin)
+        plt.xlim(-plot_margin, max(travel_list)+ plot_margin)
         plt.xlabel('Travel Distance (mm)')
         plt.ylabel('Load (N)')
         plt.legend(loc = 'upper right')
@@ -335,7 +336,7 @@ def compare_thickness(date, datatype, volume, speed, number):
     elif datatype == 'force_travel':
         max_list = []
         min_list = []
-        time_list = []
+        travel_list = []
         name = ''
         for n in range(number):
             k = n + 1
@@ -353,7 +354,7 @@ def compare_thickness(date, datatype, volume, speed, number):
             data = extract_force_data(date, volume, speed, thickness, coatingposition, syringe, trial)
             max_list.append(data[5])
             min_list.append(data[3])
-            time_list.append(data[1])
+            travel_list.append(data[6])
             name += thickness
             name += '_'
             name += syringe
@@ -361,14 +362,14 @@ def compare_thickness(date, datatype, volume, speed, number):
             name += trial
             name += 'trial_'
             df = data[0]
-            fig = plt.plot(df['time'], df['flow'], marker='.', linestyle='none', label = syringe + ' syringe_' + thickness + coatingposition + trial)
+            fig = plt.plot(df['travel'], df['load'], marker='.', linestyle='none', label = syringe + ' syringe_' + thickness + coatingposition + trial)
             fig = plt.plot(data[4], data[5], 'ro')
             fig = plt.text(data[4] + 0.75, data[5], str(data[5]))
             fig = plt.plot(data[2], data[3], 'ro')
             fig = plt.text(data[2] - 0.75, data[3], str(data[3]))
         plot_margin = 1
         plt.ylim(min(min_list) - plot_margin, max(max_list) + plot_margin)
-        plt.xlim(-plot_margin, max(time_list)+ plot_margin)
+        plt.xlim(-plot_margin, max(travel_list)+ plot_margin)
         plt.xlabel('Travel Distance (mm)')
         plt.ylabel('Load (N)')
         plt.legend(loc = 'upper right')
