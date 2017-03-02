@@ -379,3 +379,78 @@ def compare_thickness(date, datatype, volume, speed, number):
         print('wrong datatype')
 
     return plt.show()
+
+    def compare_syringe_date(datatype, volume, speed, thickness, coatingposition, number):
+        number = int(number)
+        if datatype == 'flow':
+            max_list = []
+            min_list = []
+            time_list = []
+            name = ''
+            for n in range(number):
+                k = n + 1
+                date = input ('date:')
+                syringe = input('Syringe' + str(k) + ':' )
+                trial = input('Which trial: ')
+                stop = input('stop ? (y/n):')
+                if stop == 'n':
+                    data = extract_flow_data(date, volume, speed, thickness, coatingposition, syringe, trial)
+                elif stop == 'y':
+                    data = extract_flow_data_stop(date, volume, speed, thickness, coatingposition, syringe, trial)
+                max_list.append(data[5])
+                min_list.append(data[3])
+                time_list.append(data[1])
+                name += syringe
+                name += 'syringe_'
+                name += trial
+                name += 'trial_'
+                df = data[0]
+                fig = plt.plot(df['time'], df['flow'], marker='.', linestyle='none', label = syringe + ' syringe_' + trial)
+                fig = plt.plot(data[4], data[5], 'ro')
+                fig = plt.text(data[4], data[5] + 0.75, str(data[5]))
+                fig = plt.plot(data[2], data[3], 'ro')
+                fig = plt.text(data[2], data[3] - 0.75, str(data[3]))
+            plot_margin = 1
+            plt.ylim(min(min_list) - plot_margin, max(max_list) + plot_margin)
+            plt.xlim(-plot_margin, max(time_list)+ plot_margin)
+            plt.xlabel('Time (sec)')
+            plt.ylabel('Flow Rate (mL/min)')
+            plt.legend(loc = 'upper right')
+            plt.title('Flow rate for different syringes')
+            plt.savefig(date + 'data/' + 'plot/' + 'compare_syringe' + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '_' + thickness + '.pdf')
+        elif datatype == 'force_travel':
+            max_list = []
+            min_list = []
+            travel_list = []
+            name = ''
+            for n in range(number):
+                k = n + 1
+                date = input ('date:')
+                syringe = input('Syringe' + str(k) + ':' )
+                trial = input('Which trial: ')
+                data = extract_force_data(date, volume, speed, thickness, coatingposition, syringe, trial)
+                max_list.append(data[5])
+                min_list.append(data[3])
+                travel_list.append(data[6])
+                name += syringe
+                name += 'syringe_'
+                name += trial
+                name += 'trial_'
+                df = data[0]
+                fig = plt.plot(df['travel'], df['load'], marker='.', linestyle='none', label = syringe + ' syringe_' + trial)
+                fig = plt.plot(data[4], data[5], 'ro')
+                fig = plt.text(data[4] + 0.75, data[5], str(data[5]))
+                fig = plt.plot(data[2], data[3], 'ro')
+                fig = plt.text(data[2] - 0.75, data[3], str(data[3]))
+            plot_margin = 1
+            plt.ylim(min(min_list) - plot_margin, max(max_list) + plot_margin)
+            plt.xlim(-plot_margin, max(travel_list)+ plot_margin)
+            plt.xlabel('Travel Distance (mm)')
+            plt.ylabel('Load (N)')
+            plt.legend(loc = 'upper right')
+            plt.title('Force for different syringes')
+            plt.savefig(date + 'data/' + 'plot/' + 'compare_syringe' + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '_' + thickness + '.pdf')
+        else:
+            print('wrong datatype')
+
+        return plt.show()
