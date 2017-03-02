@@ -102,4 +102,4 @@ elif plot_type == '9':
             coatingposition = 'onlyplungercoat_'
         else:
             print('wrong')
-    func.compare_syringe_date(date, datatype, volume, speed, thickness, coatingposition, number)
+    func.compare_syringe_date(datatype, volume, speed, thickness, coatingposition, number)

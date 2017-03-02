@@ -9,9 +9,12 @@ rc={'lines.linewidth': 2, 'axes.labelsize': 18, 'axes.titlesize': 18}
 sns.set(rc=rc)
 
 def extract_flow_data(date, volume, speed, thickness, coatingposition, syringe, trial):
-    file_name = date + 'data/' + 'flow' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.xls'
-    excel_file = pd.ExcelFile(file_name)
-    df = excel_file.parse('DataLog')
+    if date == '20170224':
+        file_name = date + 'data/' + 'flow' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.xls'
+        excel_file = pd.ExcelFile(file_name)
+        df = excel_file.parse('DataLog')
+    elif date == '20170217':
+        df =  pd.read_csv(date + 'data/' + 'flow' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + trial + '.csv' )
 
 
     df.columns = ['sample', 'time', 'flow']
@@ -87,9 +90,13 @@ def extract_flow_data_stop(date, volume, speed, thickness, coatingposition, syri
     return data, maxtime, min_x, min_y, max_x, max_y
 
 def extract_force_data(date, volume, speed, thickness, coatingposition, syringe, trial):
-    file_name = date + 'data/' + 'force_travel' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.xlsx'
-    excel_file = pd.ExcelFile(file_name)
-    df = excel_file.parse('Sheet4')
+    if date == '20170224':
+        file_name = date + 'data/' + 'force_travel' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + syringe + '_' + 'syringe_' + trial + '_run_full.xlsx'
+        excel_file = pd.ExcelFile(file_name)
+        df = excel_file.parse('Sheet4')
+    elif date == '20170217':
+        df =  pd.read_csv(date + 'data/' + 'force_travel' + '_' + date + '_' + volume + '_' + speed + '_' + thickness + '_' + coatingposition + trial + '.csv' )
+
 
 
     df.columns = ['reading', 'load', 'travel', 'time']
