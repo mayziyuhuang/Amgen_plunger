@@ -24,7 +24,8 @@ if plot_type == '4':
             print('wrong')
     syringe = input('Which syringe (1st, 2nd, 3rd, 4th, 5th):')
     trial = input('Trial (1st, 2nd, 3rd):')
-    func.plot_flow_force(date, volume, speed, thickness, coatingposition, syringe, trial)
+    stop = input('stop ? (y/n):')
+    func.plot_flow_force(date, volume, speed, thickness, coatingposition, syringe, trial, stop)
 
 elif plot_type == '5':
     date = input('Date in yyyymmdd:')
@@ -41,7 +42,8 @@ elif plot_type == '5':
             print('wrong')
     syringe = input('Which syringe (1st, 2nd, 3rd, 4th, 5th):')
     trial = input('Trial (1st, 2nd, 3rd):')
-    func.plot_flow(date, volume, speed, thickness, coatingposition, syringe, trial)
+    stop = input('stop ? (y/n):')
+    func.plot_flow(date, volume, speed, thickness, coatingposition, syringe, trial, stop)
 
 elif plot_type == '6':
     date = input('Date in yyyymmdd:')
