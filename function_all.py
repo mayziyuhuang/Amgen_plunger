@@ -35,6 +35,14 @@ def extract_flow_data(date, volume, speed, thickness, coatingposition, syringe, 
     df_time0['time'] = df_time0['time'] - time
     data = df_time0
 
+    zoomin_yesno = input('want to zoom in the data? (y/n)')
+    if zoomin_yesno == 'y':
+        zoomin = input('range?')
+        zoomin = float(zoomin)
+        data = data[data.time < zoomin]
+    elif zoomin_yesno == 'n':
+        data = data
+
     maxtime = df_time0['time'].iloc[-1]
 
     max_flow_index = data['flow'].idxmax()
