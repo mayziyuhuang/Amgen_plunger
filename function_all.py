@@ -426,7 +426,7 @@ def compare_syringe_date(datatype, volume, speed, thickness, coatingposition, nu
             name += trial
             name += 'trial_'
             df = data[0]
-            fig = plt.plot(df['time'], df['flow'], marker='.', linestyle='none', label = syringe + ' syringe_' + trial)
+            fig = plt.plot(df['time'], df['flow'], marker='.', linestyle='none', label = date + '_' + syringe + ' syringe_' + trial)
             #fig = plt.plot(data[4], data[5], 'ro')
             #fig = plt.text(data[4], data[5] + 0.75, str(data[5]))
             #fig = plt.plot(data[2], data[3], 'ro')
@@ -437,7 +437,7 @@ def compare_syringe_date(datatype, volume, speed, thickness, coatingposition, nu
         plt.xlabel('Time (sec)')
         plt.ylabel('Flow Rate (mL/min)')
         plt.legend(loc = 'upper right')
-        plt.title('Flow rate for different syringes')
+        plt.title('Flow rate for different syringes/trials')
         #plt.savefig('plot/' + 'compare_syringe' + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '_' + thickness + '.pdf')
     elif datatype == 'force_travel':
         max_list = []
@@ -459,7 +459,7 @@ def compare_syringe_date(datatype, volume, speed, thickness, coatingposition, nu
             name += trial
             name += 'trial_'
             df = data[0]
-            fig = plt.plot(df['travel'], df['load'], marker='.', linestyle='none', label = syringe + ' syringe_' + trial)
+            fig = plt.plot(df['travel'], df['load'], marker='.', linestyle='none', label = date + '_' + syringe + ' syringe_' + trial)
             #fig = plt.plot(data[4], data[5], 'ro')
             #fig = plt.text(data[4] + 0.75, data[5], str(data[5]))
             #fig = plt.plot(data[2], data[3], 'ro')
@@ -470,7 +470,7 @@ def compare_syringe_date(datatype, volume, speed, thickness, coatingposition, nu
         plt.xlabel('Travel Distance (mm)')
         plt.ylabel('Load (N)')
         plt.legend(loc = 'upper right')
-        plt.title('Force for different syringes')
+        plt.title('Force for different syringes/trials')
         #plt.savefig('plot/' + 'compare_syringe' + '_' + datatype + '_' + date + '_' + name + volume + '_' + speed + '_' + thickness + '.pdf')
     else:
         print('wrong datatype')
